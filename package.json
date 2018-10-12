@@ -1,0 +1,29 @@
+{
+  "name": "google",
+  "version": "1.0.0",
+  "description": "Functions for Google Cloud Functions",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jpmartinez91/GCF-commercial-app.git"
+  },
+  "keywords": [
+    "gcf",
+    "functions",
+    "serverless",
+    "fass"
+  ],
+  "author": "Jorge Martinez",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jpmartinez91/GCF-commercial-app/issues"
+  },
+  "homepage": "https://github.com/jpmartinez91/GCF-commercial-app#readme",
+  "dependencies": {
+    "@google-cloud/datastore": "^2.0.0",
+    "uuid": "^3.3.2"
+  }
+}
