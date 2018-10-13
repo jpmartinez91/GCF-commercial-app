@@ -16,36 +16,26 @@ const datastore = DataStore({
 
 exports.create = (req, res) =>
 {
-    console.log("***********************************");
-
     res.set('Access-Control-Allow-Origin', '*');
+    res.set('Access-Control-Allow-Headers', 'access-control-allow-origin,content-type');
+    res.set('Content-Type', 'application/json');
+    res.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
     switch (req.method) {
         case 'GET':
-            // hanldeGET(req, res);
+            handleGET(req, res);
             break;
         case 'POST':
-            res.set('Access-Control-Allow-Origin', '*');
-            res.set('Access-Control-Allow-Headers', 'access-control-allow-origin,content-type');
-            res.set('Content-Type', 'application/json');
-            if (!req.body) {
-                throw new Error("Request body error, make sure you have values in your request");
-            }
             handlePOST(req, res);
             break;
         case "PUT":
-            // hanldePUT(req, res);
+            hanldePUT(req, res);
+            break;
+        case "DELETE":
+            hanldeDELETE(req, res);
             break;
         case 'OPTIONS':
-            res.set('Access-Control-Allow-Origin', '*');
-            res.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-            res.set('Access-Control-Allow-Headers', 'access-control-allow-origin,content-type');
-            res.set('Content-Type', 'application/json');
             res.send({ saludo: "hola a todos", kk: "asdasd" });
         default:
-            res.set('Access-Control-Allow-Origin', '*');
-            res.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-            res.set('Access-Control-Allow-Headers', 'access-control-allow-origin,content-type');
-            res.set('Content-Type', 'application/json');
             res.status(500).send({ error: 'Something blew up!' });
             break;
     }
@@ -54,15 +44,16 @@ exports.create = (req, res) =>
 function handlePOST(req, res)
 {
     const timestamp = new Date().getTime();
-    const taskKey = datastore.key('Task');
+    const id = uuid.v1();
+    const taskKey = datastore.key(['Product', id]);
     const info = {
-        id_product: uuid.v1(),
-        name: req.body.name_product,
-        units: req.body.units_product,
-        line: req.body.line_product,
-        state: req.body.state_product,
-        price: req.body.price_product,
-        description: req.body.description_product,
+        id_product: id,
+        name_product: req.body.name_product,
+        units_product: req.body.units_product,
+        line_product: req.body.line_product,
+        state_product: req.body.state_product,
+        price_product: req.body.price_product,
+        description_product: req.body.description_product,
         created: timestamp,
         updated: timestamp,
     }
@@ -72,10 +63,180 @@ function handlePOST(req, res)
         data: info
     }
 
-    datastore.save(dataS).then(() => res.status(200).send({ saludo: "hola a todos", kk: "asdasd" })).catch((err) =>
-    {
-        console.log("--------------------");
-        console.error(err);
-        res.status(500).send(err.message);
-    });
+    datastore.save(dataS)
+        .then(() =>
+            res.status(200).send(
+                {
+                    saludo: "hola a todos",
+                    kk: "porque estamos aqui"
+                }
+            ))
+        .catch((err) =>
+        {
+            console.error(err);
+            res.status(500).send(err.message);
+        });
+}
+
+function handleGET(req, res)
+{
+    const query = datastore.createQuery('Product')
+    datastore.runQuery(query)
+        .then(
+            results =>
+            {
+                console.log(results[0]);
+                res.status(200).send(results[0])
+            })
+        .catch(
+            (err) =>
+            {
+                console.error(err);
+                res.status(500).send(err.message);
+            })
+}
+
+
+function hanldePUT(req, res)
+{
+    const timestamp = new Date().getTime();
+    const transaction = datastore.transaction();
+    const taskKey = datastore.key(['Product', req.body.id_product]);
+    transaction.run()
+        .then(
+            () => transaction.get(taskKey)
+        )
+        .then(
+            results =>
+            {
+                const product = results[0]
+                product.name_product = req.body.name_product;
+                product.units_product = req.body.units_product;
+                product.line_product = req.body.line_product;
+                product.state_product = req.body.state_product;
+                product.price_product = req.body.price_product;
+                product.description_product = req.body.description_product;
+                product.updated = timestamp;
+                transaction.save({
+                    key: taskKey,
+                    data: product
+                })
+                transaction.commit();
+            }
+        )
+        .then(
+            res.status(200).send(
+                {
+                    saludo: "hola a todos",
+                    kk: "porque estamos aqui"
+                }
+            )
+        )
+        .catch(
+            err =>
+            {
+                console.log(err);
+                res.status(500).send(
+                    {
+                        saludo: "fallo a todos",
+                        kk: "porque estamos aqui"
+                    }
+                )
+            }
+        )
+
+
+    // transaction.run().then(() =>
+    // {
+    //     Promise.all(
+    //         transaction.get(taskKey)
+    //             .then(results =>
+    //             {
+    //                 const product = results[0]
+    //                 product.name_product = req.body.name_product;
+    //                 product.units_product = req.body.units_product;
+    //                 product.line_product = req.body.line_product;
+    //                 product.state_product = req.body.state_product;
+    //                 product.price_product = req.body.price_product;
+    //                 product.description_product = req.body.description_product;
+
+    //                 transaction.save({
+    //                     key: taskKey,
+    //                     data: product
+    //                 })
+    //                 transaction.commit();
+    //                 res.status(200).send(
+    //                     {
+    //                         saludo: "hola a todos",
+    //                         kk: "porque estamos aqui"
+    //                     }
+    //                 )
+    //             })
+    //     )
+    // }).catch(err =>
+    // {
+    //     console.log(err);
+    //     transaction.rollback();
+    //     res.status(500).send(
+    //         {
+    //             saludo: "fallo a todos",
+    //             kk: "porque estamos aqui"
+    //         }
+    //     )
+    // }
+    // );
+
+    // const query = datastore.createQuery('Product')
+    //     .filter('id_product', '=', req.body.id_product);
+
+    // const timestamp = new Date().getTime();
+
+    // datastore.runQuery(query)
+    //     .then(
+    //         result =>
+    //         {
+    //             console.log("================");
+    //             result[0].name_product = req.body.name_product;
+    //             result[0].units_product = req.body.units_product;
+    //             result[0].line_product = req.body.line_product;
+    //             result[0].state_product = req.body.state_product;
+    //             result[0].price_product = req.body.price_product;
+    //             result[0].description_product = req.body.description_product;
+    //             result[0].updated = timestamp;
+    //             console.log("================");
+
+    //             console.log(result);
+
+    //             datastore.save(result)
+    //         })
+
+}
+
+function hanldeDELETE(req, res)
+{
+    const taskKey = datastore.key(['Product', req.query.id]);
+    datastore.delete(taskKey)
+        .then(
+            () =>
+            {
+                res.status(200).send(
+                    {
+                        saludo: "hola a todos",
+                        kk: "porque estamos aqui"
+                    }
+                )
+            }
+        )
+        .catch(
+            err =>
+            {
+                console.error(err);
+                res.status(500).send(
+                    {
+                        saludo: "iiiii",
+                        kk: "porque estamos aqui"
+                    }
+                )
+            }
+        )
 }
