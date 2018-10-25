@@ -14,7 +14,7 @@ const datastore = DataStore({})
 
 exports.create = (req, res) =>
 {
-    res.set('Access-Control-Allow-Methods', 'POST');
+    // res.set('Access-Control-Allow-Methods', 'POST');
     const timestamp = new Date().getTime();
 
     const id = uuid.v1();
@@ -41,17 +41,15 @@ exports.create = (req, res) =>
             data =>
                 res.status(200).send(
                     {
-                        msg: "Item was saved successfully",
+                        msg: "Item saved successfully",
                         data: data
                     }
                 ))
         .catch((err) =>
         {
             console.error(err);
-            res.status(500).send(err.message);
-            console.error(err);
             sendRespose(res, 500, {
-                msg: "",
+                msg: "Couldn't save item ",
                 err: err.message
             })
         });
@@ -59,7 +57,7 @@ exports.create = (req, res) =>
 
 exports.list = (req, res) =>
 {
-    res.set('Access-Control-Allow-Methods', 'GET');
+    // res.set('Access-Control-Allow-Methods', 'GET');
     const query = datastore.createQuery('Product')
     datastore.runQuery(query)
         .then(
@@ -81,7 +79,7 @@ exports.list = (req, res) =>
 
 exports.update = (req, res) =>
 {
-    res.set('Access-Control-Allow-Methods', 'PUT');
+    // res.set('Access-Control-Allow-Methods', 'PUT');
     const timestamp = new Date().getTime();
     const transaction = datastore.transaction();
     const taskKey = datastore.key(['Product', req.body.id_product]);
@@ -129,7 +127,7 @@ exports.update = (req, res) =>
 
 exports.delete = (req, res) =>
 {
-    res.set('Access-Control-Allow-Methods', 'DELETE');
+    // res.set('Access-Control-Allow-Methods', 'DELETE');
     const taskKey = datastore.key(['Product', req.query.id]);
     datastore.delete(taskKey)
         .then(
