@@ -10,9 +10,7 @@ const projectID = "patotesis";
  * More info: https://expressjs.com/en/api.html#res 
  **/
 
-const datastore = DataStore({
-
-})
+const datastore = DataStore({})
 
 exports.create = (req, res) =>
 {
@@ -144,72 +142,6 @@ function hanldePUT(req, res)
                 )
             }
         )
-
-
-    // transaction.run().then(() =>
-    // {
-    //     Promise.all(
-    //         transaction.get(taskKey)
-    //             .then(results =>
-    //             {
-    //                 const product = results[0]
-    //                 product.name_product = req.body.name_product;
-    //                 product.units_product = req.body.units_product;
-    //                 product.line_product = req.body.line_product;
-    //                 product.state_product = req.body.state_product;
-    //                 product.price_product = req.body.price_product;
-    //                 product.description_product = req.body.description_product;
-
-    //                 transaction.save({
-    //                     key: taskKey,
-    //                     data: product
-    //                 })
-    //                 transaction.commit();
-    //                 res.status(200).send(
-    //                     {
-    //                         saludo: "hola a todos",
-    //                         kk: "porque estamos aqui"
-    //                     }
-    //                 )
-    //             })
-    //     )
-    // }).catch(err =>
-    // {
-    //     console.log(err);
-    //     transaction.rollback();
-    //     res.status(500).send(
-    //         {
-    //             saludo: "fallo a todos",
-    //             kk: "porque estamos aqui"
-    //         }
-    //     )
-    // }
-    // );
-
-    // const query = datastore.createQuery('Product')
-    //     .filter('id_product', '=', req.body.id_product);
-
-    // const timestamp = new Date().getTime();
-
-    // datastore.runQuery(query)
-    //     .then(
-    //         result =>
-    //         {
-    //             console.log("================");
-    //             result[0].name_product = req.body.name_product;
-    //             result[0].units_product = req.body.units_product;
-    //             result[0].line_product = req.body.line_product;
-    //             result[0].state_product = req.body.state_product;
-    //             result[0].price_product = req.body.price_product;
-    //             result[0].description_product = req.body.description_product;
-    //             result[0].updated = timestamp;
-    //             console.log("================");
-
-    //             console.log(result);
-
-    //             datastore.save(result)
-    //         })
-
 }
 
 function hanldeDELETE(req, res)
