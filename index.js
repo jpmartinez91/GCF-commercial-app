@@ -14,34 +14,9 @@ const datastore = DataStore({})
 
 exports.create = (req, res) =>
 {
-    res.set('Access-Control-Allow-Origin', '*');
-    res.set('Access-Control-Allow-Headers', 'access-control-allow-origin,content-type');
-    res.set('Content-Type', 'application/json');
-    res.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-    switch (req.method) {
-        case 'GET':
-            handleGET(req, res);
-            break;
-        case 'POST':
-            handlePOST(req, res);
-            break;
-        case "PUT":
-            hanldePUT(req, res);
-            break;
-        case "DELETE":
-            hanldeDELETE(req, res);
-            break;
-        case 'OPTIONS':
-            res.send({ saludo: "hola a todos", kk: "asdasd" });
-        default:
-            res.status(500).send({ error: 'Something blew up!' });
-            break;
-    }
-};
-
-function handlePOST(req, res)
-{
+    res.set('Access-Control-Allow-Methods', 'POST');
     const timestamp = new Date().getTime();
+
     const id = uuid.v1();
     const taskKey = datastore.key(['Product', id]);
     const info = {
@@ -62,22 +37,29 @@ function handlePOST(req, res)
     }
 
     datastore.save(dataS)
-        .then(() =>
-            res.status(200).send(
-                {
-                    saludo: "hola a todos",
-                    kk: "porque estamos aqui"
-                }
-            ))
+        .then(
+            data =>
+                res.status(200).send(
+                    {
+                        msg: "Item was saved successfully",
+                        data: data
+                    }
+                ))
         .catch((err) =>
         {
             console.error(err);
             res.status(500).send(err.message);
+            console.error(err);
+            sendRespose(res, 500, {
+                msg: "",
+                err: err.message
+            })
         });
-}
+};
 
-function handleGET(req, res)
+exports.list = (req, res) =>
 {
+    res.set('Access-Control-Allow-Methods', 'GET');
     const query = datastore.createQuery('Product')
     datastore.runQuery(query)
         .then(
@@ -90,13 +72,16 @@ function handleGET(req, res)
             (err) =>
             {
                 console.error(err);
-                res.status(500).send(err.message);
+                sendRespose(res, 500, {
+                    msg: "couldn't get items",
+                    err: err.message
+                })
             })
-}
+};
 
-
-function hanldePUT(req, res)
+exports.update = (req, res) =>
 {
+    res.set('Access-Control-Allow-Methods', 'PUT');
     const timestamp = new Date().getTime();
     const transaction = datastore.transaction();
     const taskKey = datastore.key(['Product', req.body.id_product]);
@@ -134,41 +119,43 @@ function hanldePUT(req, res)
             err =>
             {
                 console.log(err);
-                res.status(500).send(
-                    {
-                        saludo: "fallo a todos",
-                        kk: "porque estamos aqui"
-                    }
-                )
+                sendRespose(res, 500, {
+                    msg: "Update didn't be performed",
+                    err: err.message
+                })
             }
         )
-}
+};
 
-function hanldeDELETE(req, res)
+exports.delete = (req, res) =>
 {
+    res.set('Access-Control-Allow-Methods', 'DELETE');
     const taskKey = datastore.key(['Product', req.query.id]);
     datastore.delete(taskKey)
         .then(
             () =>
             {
-                res.status(200).send(
-                    {
-                        saludo: "hola a todos",
-                        kk: "porque estamos aqui"
-                    }
-                )
+                sendRespose(res, 500, {
+                    msg: "Deleted successfully",
+                })
             }
         )
         .catch(
             err =>
             {
                 console.error(err);
-                res.status(500).send(
-                    {
-                        saludo: "iiiii",
-                        kk: "porque estamos aqui"
-                    }
-                )
+                sendRespose(res, 500, {
+                    msg: "Delete didn't be performed",
+                    err: err.message
+                })
             }
         )
+};
+
+function sendRespose(res, code, msg)
+{
+    res.set('Access-Control-Allow-Origin', '*');
+    res.set('Access-Control-Allow-Headers', 'access-control-allow-origin,content-type');
+    res.set('Content-Type', 'application/json');
+    res.status(code).send(msg)
 }
