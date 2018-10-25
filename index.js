@@ -14,7 +14,10 @@ const datastore = DataStore({})
 
 exports.create = (req, res) =>
 {
-    // res.set('Access-Control-Allow-Methods', 'POST');
+    res.set('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.set('Access-Control-Allow-Origin', '*');
+    res.set('Access-Control-Allow-Headers', 'access-control-allow-origin,content-type');
+    res.set('Content-Type', 'application/json');
     const timestamp = new Date().getTime();
 
     const id = uuid.v1();
@@ -57,7 +60,10 @@ exports.create = (req, res) =>
 
 exports.list = (req, res) =>
 {
-    // res.set('Access-Control-Allow-Methods', 'GET');
+    res.set('Access-Control-Allow-Methods', 'GET, OPTIONS');
+    res.set('Access-Control-Allow-Origin', '*');
+    res.set('Access-Control-Allow-Headers', 'access-control-allow-origin,content-type');
+    res.set('Content-Type', 'application/json');
     const query = datastore.createQuery('Product')
     datastore.runQuery(query)
         .then(
@@ -79,7 +85,10 @@ exports.list = (req, res) =>
 
 exports.update = (req, res) =>
 {
-    // res.set('Access-Control-Allow-Methods', 'PUT');
+    res.set('Access-Control-Allow-Methods', 'PUT, OPTIONS');
+    res.set('Access-Control-Allow-Origin', '*');
+    res.set('Access-Control-Allow-Headers', 'access-control-allow-origin,content-type');
+    res.set('Content-Type', 'application/json');
     const timestamp = new Date().getTime();
     const transaction = datastore.transaction();
     const taskKey = datastore.key(['Product', req.body.id_product]);
@@ -127,7 +136,10 @@ exports.update = (req, res) =>
 
 exports.delete = (req, res) =>
 {
-    // res.set('Access-Control-Allow-Methods', 'DELETE');
+    res.set('Access-Control-Allow-Methods', 'DELETE, OPTIONS');
+    res.set('Access-Control-Allow-Origin', '*');
+    res.set('Access-Control-Allow-Headers', 'access-control-allow-origin,content-type');
+    res.set('Content-Type', 'application/json');
     const taskKey = datastore.key(['Product', req.query.id]);
     datastore.delete(taskKey)
         .then(
@@ -152,9 +164,5 @@ exports.delete = (req, res) =>
 
 function sendRespose(res, code, msg)
 {
-    res.set('Access-Control-Allow-Methods', 'DELETE, POST, PUT, GET, OPTIONS');
-    res.set('Access-Control-Allow-Origin', '*');
-    res.set('Access-Control-Allow-Headers', 'access-control-allow-origin,content-type');
-    res.set('Content-Type', 'application/json');
     res.status(code).send(msg)
 }
