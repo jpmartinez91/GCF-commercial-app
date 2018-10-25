@@ -14,7 +14,6 @@ const datastore = DataStore({})
 
 exports.create = (req, res) =>
 {
-    res.set('Access-Control-Allow-Methods', 'POST, OPTIONS');
     res.set('Access-Control-Allow-Origin', '*');
     res.set('Access-Control-Allow-Headers', 'access-control-allow-origin,content-type');
     res.set('Content-Type', 'application/json');
@@ -60,7 +59,6 @@ exports.create = (req, res) =>
 
 exports.list = (req, res) =>
 {
-    res.set('Access-Control-Allow-Methods', 'GET, OPTIONS');
     res.set('Access-Control-Allow-Origin', '*');
     res.set('Access-Control-Allow-Headers', 'access-control-allow-origin,content-type');
     res.set('Content-Type', 'application/json');
@@ -85,7 +83,6 @@ exports.list = (req, res) =>
 
 exports.update = (req, res) =>
 {
-    res.set('Access-Control-Allow-Methods', 'PUT, OPTIONS');
     res.set('Access-Control-Allow-Origin', '*');
     res.set('Access-Control-Allow-Headers', 'access-control-allow-origin,content-type');
     res.set('Content-Type', 'application/json');
@@ -136,7 +133,6 @@ exports.update = (req, res) =>
 
 exports.delete = (req, res) =>
 {
-    res.set('Access-Control-Allow-Methods', 'DELETE, OPTIONS');
     res.set('Access-Control-Allow-Origin', '*');
     res.set('Access-Control-Allow-Headers', 'access-control-allow-origin,content-type');
     res.set('Content-Type', 'application/json');
