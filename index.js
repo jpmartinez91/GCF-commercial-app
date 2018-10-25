@@ -51,7 +51,7 @@ exports.create = (req, res) =>
         .catch((err) =>
         {
             console.error(err);
-            sendRespose(res, 500, {
+            res.status(500).send({
                 msg: "Couldn't save item ",
                 err: err.message
             })
@@ -76,7 +76,7 @@ exports.list = (req, res) =>
             (err) =>
             {
                 console.error(err);
-                sendRespose(res, 500, {
+                res.status(500).send({
                     msg: "couldn't get items",
                     err: err.message
                 })
@@ -126,7 +126,7 @@ exports.update = (req, res) =>
             err =>
             {
                 console.log(err);
-                sendRespose(res, 500, {
+                res.status(500).send({
                     msg: "Update didn't be performed",
                     err: err.message
                 })
@@ -145,7 +145,7 @@ exports.delete = (req, res) =>
         .then(
             () =>
             {
-                sendRespose(res, 500, {
+                res.status(200).send({
                     msg: "Deleted successfully",
                 })
             }
@@ -154,15 +154,10 @@ exports.delete = (req, res) =>
             err =>
             {
                 console.error(err);
-                sendRespose(res, 500, {
+                res.status(code).send({
                     msg: "Delete didn't be performed",
                     err: err.message
                 })
             }
         )
 };
-
-function sendRespose(res, code, msg)
-{
-    res.status(code).send(msg)
-}
