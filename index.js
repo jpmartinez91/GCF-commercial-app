@@ -152,6 +152,7 @@ exports.delete = (req, res) =>
 
 function sendRespose(res, code, msg)
 {
+    res.set('Access-Control-Allow-Methods', 'DELETE, POST, PUT, GET, OPTIONS');
     res.set('Access-Control-Allow-Origin', '*');
     res.set('Access-Control-Allow-Headers', 'access-control-allow-origin,content-type');
     res.set('Content-Type', 'application/json');
