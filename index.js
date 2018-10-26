@@ -17,8 +17,8 @@ exports.create = (req, res) =>
     res.set('Access-Control-Allow-Origin', '*');
     res.set('Access-Control-Allow-Headers', 'access-control-allow-origin,content-type');
     res.set('Content-Type', 'application/json');
+    res.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
     const timestamp = new Date().getTime();
-
     const id = uuid.v1();
     const taskKey = datastore.key(['Product', id]);
     const info = {
@@ -43,18 +43,16 @@ exports.create = (req, res) =>
             data =>
                 res.status(200).send(
                     {
-                        msg: "Item saved successfully",
+                        msg: "Item created succesfully",
                         data: data
                     }
                 ))
-        .catch((err) =>
-        {
-            console.error(err);
-            res.status(500).send({
-                msg: "Couldn't save item ",
-                err: err.message
-            })
-        });
+        .catch(
+            err =>
+            {
+                console.error(err);
+                res.status(500).send(err.message);
+            });
 };
 
 exports.list = (req, res) =>
@@ -62,6 +60,7 @@ exports.list = (req, res) =>
     res.set('Access-Control-Allow-Origin', '*');
     res.set('Access-Control-Allow-Headers', 'access-control-allow-origin,content-type');
     res.set('Content-Type', 'application/json');
+    res.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
     const query = datastore.createQuery('Product')
     datastore.runQuery(query)
         .then(
@@ -71,13 +70,10 @@ exports.list = (req, res) =>
                 res.status(200).send(results[0])
             })
         .catch(
-            (err) =>
+            err =>
             {
                 console.error(err);
-                res.status(500).send({
-                    msg: "couldn't get items",
-                    err: err.message
-                })
+                res.status(500).send(err.message);
             })
 };
 
@@ -86,6 +82,7 @@ exports.update = (req, res) =>
     res.set('Access-Control-Allow-Origin', '*');
     res.set('Access-Control-Allow-Headers', 'access-control-allow-origin,content-type');
     res.set('Content-Type', 'application/json');
+    res.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
     const timestamp = new Date().getTime();
     const transaction = datastore.transaction();
     const taskKey = datastore.key(['Product', req.body.id_product]);
@@ -114,8 +111,7 @@ exports.update = (req, res) =>
         .then(
             res.status(200).send(
                 {
-                    saludo: "hola a todos",
-                    kk: "porque estamos aqui"
+                    msg: "Item updated successfully"
                 }
             )
         )
@@ -123,10 +119,11 @@ exports.update = (req, res) =>
             err =>
             {
                 console.log(err);
-                res.status(500).send({
-                    msg: "Update didn't be performed",
-                    err: err.message
-                })
+                res.status(500).send(
+                    {
+                        msg: "Task don't performed",
+                    }
+                )
             }
         )
 };
@@ -136,24 +133,28 @@ exports.delete = (req, res) =>
     res.set('Access-Control-Allow-Origin', '*');
     res.set('Access-Control-Allow-Headers', 'access-control-allow-origin,content-type');
     res.set('Content-Type', 'application/json');
+    res.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
     const taskKey = datastore.key(['Product', req.query.id]);
     datastore.delete(taskKey)
         .then(
             () =>
             {
-                res.status(200).send({
-                    msg: "Deleted successfully",
-                })
+                res.status(200).send(
+                    {
+                        msg: "Item deteleted successfully"
+                    }
+                )
             }
         )
         .catch(
             err =>
             {
                 console.error(err);
-                res.status(code).send({
-                    msg: "Delete didn't be performed",
-                    err: err.message
-                })
+                res.status(500).send(
+                    {
+                        saludo: "Delete task don't performed"
+                    }
+                )
             }
         )
 };
